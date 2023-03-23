@@ -187,6 +187,11 @@ std::string VulkanExampleBase::getShadersPath() const
 	return getAssetPath() + "shaders/" + shaderDir + "/";
 }
 
+std::string VulkanExampleBase::getHomeworkShadersPath() const
+{
+	return getAssetPath() + "homework/shaders/" + shaderDir + "/";
+}
+
 void VulkanExampleBase::createPipelineCache()
 {
 	VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};

@@ -95,7 +95,8 @@ private:
 protected:
 	// Returns the path to the root of the glsl or hlsl shader directory.
 	std::string getShadersPath() const;
-
+	// Returns the path to the root of the homework glsl or hlsl shader directory.
+	std::string getHomeworkShadersPath() const;
 	// Frame counter to display fps
 	uint32_t frameCounter = 0;
 	uint32_t lastFPS = 0;
