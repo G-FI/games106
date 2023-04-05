@@ -73,12 +73,13 @@ endfunction(buildHomework)
 # Build all homework
 function(buildHomeworks)
 	foreach(HOMEWORK ${HOMEWORKS})
-		buildHomework(${HOMEWORKS})
+		buildHomework(${HOMEWORK})
 	endforeach(HOMEWORK)
 endfunction(buildHomeworks)
 
 set(HOMEWORKS
 	homework0
+	homework1
 )
 
 buildHomeworks()

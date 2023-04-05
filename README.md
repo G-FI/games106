@@ -24,3 +24,11 @@
 
 ### homework1
 
+作业1，扩展GLTF loading。作业1提供了一个gltf显示的demo，只支持静态模型，以及颜色贴图。作业1需要在这个基础上进行升级。支持：1、支持gltf的骨骼动画。2、支持gltf的PBR的材质，包括法线贴图。
+进阶作业：增加一个Tone Mapping的后处理pass。增加GLTF的滤镜功能。
+
+下面是相关的资料
+
+- GLTF格式文档 https://github.com/KhronosGroup/glTF
+- 带动画的GLTF模型 https://github.com/GPUOpen-LibrariesAndSDKs/Cauldron-Media/tree/v1.0.4/buster_drone
+
