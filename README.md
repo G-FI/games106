@@ -12,6 +12,10 @@
 
 作业的课程代码在./homework目录下，shader在./data/homework/shaders下。上传作业也按照一样的文件结构。上传对应的文件即可。
 
+### 作业提交
+
+课程学生注册方法：登录 http://cn.ces-alpha.org/course/register/GAMES106/  注册账号，填写个人信息，输入验证码ilovegraphics，即可进入课程主页，查看并提交作业
+
 ### homework0
 
 作业0，作为一个熟悉编译环境的课程作业。最后显示一个如下图一样的三角形。有兴趣可以尝试在Android或者iOS上运行
