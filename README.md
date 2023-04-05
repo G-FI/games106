@@ -16,7 +16,7 @@
 
 作业0，作为一个熟悉编译环境的课程作业。最后显示一个如下图一样的三角形。
 
-![triangle](.\screenshots\triangle.jpg)
+![triangle](./screenshots/triangle.jpg)
 
 ### homework1
 
