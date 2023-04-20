@@ -14,7 +14,7 @@
 
 ### 作业提交
 
-课程学生注册方法：登录 http://cn.ces-alpha.org/course/register/GAMES106/  注册账号，填写个人信息，输入验证码ilovegraphics，即可进入课程主页，查看并提交作业
+课程学生注册方法：登录 [http://cn.ces-alpha.org/course/register/GAMES106/](http://cn.ces-alpha.org/course/register/GAMES106/) 注册账号，填写个人信息，输入验证码ilovegraphics，即可进入课程主页，查看并提交作业
 
 ### homework0
 
