@@ -8,6 +8,8 @@ layout (location = 2) in vec2 inUV;
 layout (location = 3) in vec3 inViewVec;
 layout (location = 4) in vec3 inLightVec;
 
+layout (location = 5) flat in uint inNodeIndex;
+
 layout (location = 0) out vec4 outFragColor;
 
 void main() 

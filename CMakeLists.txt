@@ -97,7 +97,7 @@ ELSE()
 	message(STATUS ${Vulkan_LIBRARY})
 ENDIF()
 
-# Set preprocessor defines
+# Set preprocessor defines 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -D_USE_MATH_DEFINES")
 
 # Clang specific stuff
@@ -149,4 +149,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
 
 add_subdirectory(base)
 add_subdirectory(homework)
-# add_subdirectory(examples)
+add_subdirectory(examples)
