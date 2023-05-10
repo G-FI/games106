@@ -194,45 +194,59 @@
    1. 这些色调映射算法经常会包含一个选择性倾向黑暗或者明亮区域的参数，叫做曝光度。
    2. HDR图片包含在不同曝光等级的细节, 通过设置曝光参数允许我们更加精确设定我们是要注重黑暗还是明亮的区域的HDR颜色值。举例来说，高曝光值会使隧道的黑暗部分显示更多的细节，然而低曝光值会显著减少黑暗区域的细节，但允许我们看到更多明亮区域的细节。
 
-10. IBL（image based lighting）主要是**处理间接光照**
+9. IBL（image based lighting）主要是**处理间接光照**
 
-    其光源不是如[前一节教程](https://learnopengl-cn.github.io/07 PBR/02 Lighting/)中描述的可分解的直接光源，而是将周围环境整体视为一个大光源。IBL 通常使用（取自现实世界或从3D场景生成的）环境立方体贴图 (Cubemap) ，我们可以将立方体贴图的每个像素视为光源，在渲染方程中直接使用它。这种方式可以有效地捕捉环境的全局光照和氛围，使物体**更好地融入**其环境。
-    $$
-    L_o(\mathbf{p}, \omega_o) = \int_\Omega f_r(\mathbf{p}, \omega_i, \omega_o) 
-    L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i \\\\
-    f_r=k_d f_{lambert}+k_sf_{cook−torrance}\\\\
-    f_{CookTorrance}=\frac{DFG}{4(ωo⋅n)(ωi⋅n)}
-    $$
-    
+     1. Image based lighting使用environment map，其中shading point采样到的每一个texel都认为是环境光打到这个点的radiance，而不是光源的radiance，因此就是认为光源是无限远的，map上存储的是该shading point上应该接收到的能量，就没有距离什么事。而对于直接光照计算时，一般给定的是光源的positon，color(能量)，因此渲染方程中的Li(wi, p) = I / (r^2)
 
-    1. 对于**直接光照**计算**反射方程**时：
+     2. 其光源不是如[前一节教程](https://learnopengl-cn.github.io/07 PBR/02 Lighting/)中描述的可分解的直接光源，而是将周围环境整体视为一个大光源。IBL 通常使用（取自现实世界或从3D场景生成的）环境立方体贴图 (Cubemap) ，我们可以将立方体贴图的每个像素视为光源，在渲染方程中直接使用它。这种方式可以有效地捕捉环境的全局光照和氛围，使物体**更好地融入**其环境。
 
-       1. 直接采样光源就可以，没有积分需要计算，它的BRDF包括diffuse reflection 和 specular reflection，先求kd，ks，以及f cook-torrance, 进而得到 BRDF项fr，然后直接fr * 光源能量 * cos θ就得到了从wo方向观察p点，直接光照所贡献的亮度(有多个光源时，求和即可，这里说的时点光源或方向光源，打到一个点的只有该光源发出的一条射线)
-
-    2. 对于**间接光照**计算反射方程时：使用IBL。
-
-       1. 取自现实世界或从3D场景生成的环境立方体贴图 (Cubemap)，将立方体贴图的每个像素视为光源(Li(p, wi)项)，在渲染方程中直接使用它
-
-       2. 对于一个点p，计算出它在一个半球面内所每一条光线，对于出射方向wo的radiance的贡献也就时反射方程中的积分，求解积分我们可以离散处理，使用蒙特卡洛积分，计算出Lo
-
-          计算中BRDF也包括两项，diffuse reflection 和 specular reflection(**其中反射能量比例ks包含在了F菲涅尔项中了**)
-          $$
-          L_o(\mathbf{p}, \omega_o) = k_d \cdot \frac{c}{\pi}\int_\Omega 
-          L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i + \int_\Omega f_r(\mathbf{p}, \omega_i, \omega_o) 
-          L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i
-          $$
-
-          1. 对于漫反射部分的积分值，运行时对于整个任意半球面进行积分，开销很大，可以根据环境光贴图，预先生成一个iradiance贴图，它表示环境中的**一个点p的微小区域**，法线为n，接收到的irradiance是多少，iradiance贴图就相当于一个函数，输入法线，输出是这个区域接收到的irradiance，生成的irradiance如图
-
-             ![irradiance](../../resources/ibl_irradiance.png)
-
-             ```glsl
-             vec3 irradiance = texture(irradianceMap, N).rgb;//接收到的irradiance
-             vec3 fr = albedo / pi; //漫反射的brdf是常数
-             vec3 Lo = kd * fr * irradiance; //该点p，从整个半球方向接收到能量，然后反射到wo方向的能量是多少
-             ```
+     $$
+     L_o(\mathbf{p}, \omega_o) = \int_\Omega f_r(\mathbf{p}, \omega_i, \omega_o) 
+     L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i \\\\
+     f_r=k_d f_{lambert}+k_sf_{cook−torrance}\\\\
+     f_{CookTorrance}=\frac{DFG}{4(ωo⋅n)(ωi⋅n)}
+     $$
 
 
+     1. 对于**直接光照**计算**反射方程**时：
+
+        1. 直接采样光源就可以，没有积分需要计算，它的BRDF包括diffuse reflection 和 specular reflection，先求kd，ks，以及f cook-torrance, 进而得到 BRDF项fr，然后直接fr * 光源能量 * cos θ就得到了从wo方向观察p点，直接光照所贡献的亮度(有多个光源时，求和即可，这里说的时点光源或方向光源，打到一个点的只有该光源发出的一条射线)
+
+     2. 对于**间接光照**计算反射方程时：使用IBL。
+
+        1. 取自现实世界或从3D场景生成的环境立方体贴图 (Cubemap)，将立方体贴图的每个像素视为间接光的入射能量Li(p, wi)项)，在渲染方程中直接使用它
+
+        2. 对于一个点p，计算出它在一个半球面内每一条光线，对于出射方向wo的radiance的贡献也就时反射方程中的积分，求解积分我们可以离散处理，使用蒙特卡洛积分，计算出Lo
+
+           计算中BRDF也包括两项，diffuse reflection 和 specular reflection(**其中反射能量比例ks包含在了F菲涅尔项中了**)
+           $$
+           L_o(\mathbf{p}, \omega_o) = k_d \cdot \frac{c}{\pi}\int_\Omega 
+           L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i + \int_\Omega f_r(\mathbf{p}, \omega_i, \omega_o) 
+           L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i
+           $$
+
+           1. **漫反射部分的积分值**，运行时对于整个任意半球面进行积分，开销很大，可以根据环境光贴图，预先生成一个**irradianceMap**贴图，它表示环境中的**一个点p的微小区域**，法线为n，接收到的irradiance是多少，iradiance贴图就相当于一个函数，输入法线，输出是这个区域接收到的irradiance，生成的irradiance如图
+
+              ![irradiance](../../resources/ibl_irradiance.png)
+
+              ```glsl
+              vec3 irradiance = texture(irradianceMap, N).rgb;//接收到的irradiance
+              vec3 fr = albedo / pi; //漫反射的brdf是常数
+              vec3 Lo = kd * fr * irradiance; //该点p，从整个半球方向接收到能量，然后反射到wo方向的能量是多少
+              ```
+           
+           2. 高光反射部分，使用split sum方法将，积分拆开
+              $$
+              \int_\Omega f_r(\mathbf{p}, \omega_i, \omega_o) 
+              L_i(\mathbf{p}, \omega_i) (\omega_i \cdot \mathbf{n}) d\omega_i \approx \int_{\Omega}L_i(\omega_i \cdot \mathbf{n}) d\omega_i \cdot  \int_{\Omega}f_r(\mathbf{p}, \omega_i, \omega_o)(\omega_i \cdot \mathbf{n})  d \omega_i \\
+               \int_{\Omega}f_r(\mathbf{p}, \omega_i, \omega_o)(\omega_i \cdot \mathbf{n})  d \ \approx R_0 \int_{\Omega} \frac{f_r}{F}(1-{cos\theta_i}^5) cos\theta_i d \omega_i +\int_{\Omega} \frac{f_r}{F}(1-{cos\theta_i}^5) cos\theta_i d \omega_i \\
+               其中第二部分的拆分是使用 Schilck's approximation，来进行
+              $$
+           
+              1. 第一项计算出来存储为一个**prefilteredColorMap**里面，是三通道的贴图，输入: 1.法线n  2. roughness， 三个元素的向量代表颜色
+              2. 第二项计算出来存储在一个**brdfLUTMap**里面，输入 1. 法线 2. 观察方向 输出 :  r通道：公式(2)的第一项，g通道：公式(2)的第二项
+
+ 10. 
 
 
 # TODO

@@ -80,6 +80,7 @@ endfunction(buildHomeworks)
 set(HOMEWORKS
 	homework0
 	homework1
+	homework1TODO
 )
 
 buildHomeworks()

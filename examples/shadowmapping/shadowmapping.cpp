@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Vulkan Example - Shadow mapping for directional light sources
 *
 * Copyright (C) 2016-2022 by Sascha Willems - www.saschawillems.de
@@ -450,7 +450,7 @@ public:
 		std::vector<VkDynamicState> dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
 		VkPipelineDynamicStateCreateInfo dynamicStateCI = vks::initializers::pipelineDynamicStateCreateInfo(dynamicStateEnables.data(), dynamicStateEnables.size(), 0);
 		std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages;
-
+		
 		VkGraphicsPipelineCreateInfo pipelineCI = vks::initializers::pipelineCreateInfo(pipelineLayout, renderPass, 0);
 		pipelineCI.pInputAssemblyState = &inputAssemblyStateCI;
 		pipelineCI.pRasterizationState = &rasterizationStateCI;
@@ -461,6 +461,7 @@ public:
 		pipelineCI.pDynamicState = &dynamicStateCI;
 		pipelineCI.stageCount = shaderStages.size();
 		pipelineCI.pStages = shaderStages.data();
+
 
 		// Shadow mapping debug quad display
 		rasterizationStateCI.cullMode = VK_CULL_MODE_NONE;
@@ -484,7 +485,7 @@ public:
 		// No filtering
 		VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCI, nullptr, &pipelines.sceneShadow));
 		// PCF filtering
-		enablePCF = 1;
+		enablePCF = 1; // constant_id= 0, 类似与条件编译，用于重用shader，这两个pipeline使用了一组shader，但是功能却不同
 		VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCI, nullptr, &pipelines.sceneShadowPCF));
 
 		// Offscreen pipeline (vertex shader only)

@@ -71,6 +71,5 @@ void main()
 
 	vec3 pos = worldPos.xyz / worldPos.w;
 	
-	outViewVec = uboScene.viewPos.xyz - pos;
 	outLightVec = uboScene.lightPos.xzy - pos;
 }
